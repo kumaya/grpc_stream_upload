@@ -1,5 +1,5 @@
 all:
-	protoc --gogofaster_out=plugins=grpc:. ./protos/filestream.proto
+	#protoc --gogofaster_out=plugins=grpc:. ./protos/filestream.proto
 	cd server; go build
 	cd client; go build
 
