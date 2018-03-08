@@ -1,0 +1,21 @@
+syntax = "proto3";
+package protos;
+
+message FileChunk {
+	bytes Content = 1;
+}
+
+enum FileUploadStatusCode {
+	Unknown = 0;
+	Ok = 1;
+	Failed = 2;
+}
+
+message FileUploadAck {
+	string Message = 1;
+	FileUploadStatusCode Code = 2;
+}
+
+service gRPCStreamUploadService {
+	rpc SendFile(stream FileChunk) returns (FileUploadAck) {}
+}
