@@ -1,14 +1,14 @@
 package main
 
 import (
-	"io"
+    "io"
     "log"
     "net"
     "time"
     // "github.com/pkg/errors"
+    pb "github.com/kumaya/grpc_stream_upload/protos"
     "google.golang.org/grpc"
     "google.golang.org/grpc/reflection"
-    pb "github.com/kumaya/grpc_stream_upload/protos"
 )
 
 const (
@@ -16,7 +16,6 @@ const (
 )
 
 type server struct{}
-
 
 func (s *server) SendFile(stream pb.GRPCStreamUploadService_SendFileServer) (err error) {
 	log.Printf("File receive start at: %v", time.Now())
@@ -34,15 +33,15 @@ func (s *server) SendFile(stream pb.GRPCStreamUploadService_SendFileServer) (err
 			return
 		}
 	}
-	
+
 	// GOTO statement begins
-	END:
+END:
 	log.Printf("File received complete at: %v", time.Now())
 
 	err = stream.SendAndClose(&pb.FileUploadAck{
-					Message: "File received successfully, YooHoo!!",
-					Code: pb.FileUploadStatusCode_Ok,
-		})
+		Message: "File received successfully, YooHoo!!",
+		Code:    pb.FileUploadStatusCode_Ok,
+	})
 	if err != nil {
 		log.Fatalf("failed to send status code: %v", err)
 		// err = errors.Wrapf(err, "failed to send status code")
@@ -51,7 +50,6 @@ func (s *server) SendFile(stream pb.GRPCStreamUploadService_SendFileServer) (err
 
 	return
 }
-
 
 func main() {
 	log.Printf("Server started. Listening on port %s", port)

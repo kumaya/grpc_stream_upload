@@ -2,31 +2,30 @@ package main
 
 import (
 	"io"
-    "os"
-    "log"
-    "time"
-    // "github.com/pkg/errors"
-    "google.golang.org/grpc"
-    "golang.org/x/net/context"
-    pb "github.com/kumaya/grpc_stream_upload/protos"
+	"log"
+	"os"
+	"time"
+	// "github.com/pkg/errors"
+	pb "github.com/kumaya/grpc_stream_upload/protos"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
 )
 
 const (
-	address = "localhost:8003"
-	chunksize = 3194304
-	defaultFile = "./main"
+	address     = "localhost:8003"
+	chunksize   = 200
+	defaultFile = "./main.go"
 )
-
 
 func UploadFile(client pb.GRPCStreamUploadServiceClient, ctx context.Context, f string) (err error) {
 	log.Printf("File send start at: %v", time.Now())
 	var (
 		writing = true
-		buf []byte
-		n int
-		file *os.File
-		status *pb.FileUploadAck
-		)
+		buf     []byte
+		n       int
+		file    *os.File
+		status  *pb.FileUploadAck
+	)
 
 	file, err = os.Open(f)
 	if err != nil {
@@ -60,7 +59,7 @@ func UploadFile(client pb.GRPCStreamUploadServiceClient, ctx context.Context, f 
 
 		err = stream.Send(&pb.FileChunk{
 			Content: buf[:n],
-			})
+		})
 		if err != nil {
 			log.Fatalf("failed to send chunk: %v", err)
 			// err = errors.Wrapf(err, "failed to send chunk")
@@ -86,7 +85,6 @@ func UploadFile(client pb.GRPCStreamUploadServiceClient, ctx context.Context, f 
 	}
 	return
 }
-
 
 func main() {
 	// Setup connection to the server
@@ -114,9 +112,3 @@ func main() {
 	}
 	return
 }
-
-
-
-
-
-
